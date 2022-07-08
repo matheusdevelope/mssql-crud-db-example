@@ -1,0 +1,19 @@
+{
+  "name": "mssql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist",
+  "scripts": {
+    "build": "tsc -w",
+    "dev": "nodemon dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mssql": "^8.1.2"
+  },
+  "devDependencies": {
+    "@types/mssql": "^8.0.3"
+  }
+}
