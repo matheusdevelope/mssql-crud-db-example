@@ -1,5 +1,5 @@
 import mssql, { Int, VarChar } from "mssql";
-import { Insert, Select, Update } from "./crud";
+import { Delete, Insert, Select, Update } from "./crud";
 import { error, log } from "./utils";
 
 async function ConnectionSQL() {
@@ -64,16 +64,38 @@ ConnectionSQL().then((SQL) => {
   //     })
   //     .catch(error);
 
+  // SQL &&
+  //   Update(SQL, "teste2", Lista_Update, [
+  //     {
+  //       campo: "descricao",
+  //       valor: "%?%",
+  //       operador: "like",
+  //       type: VarChar(),
+  //     },
+  //   ]).then((result) => {
+  //     log("Resultado UPDATE >>", result);
+  //   });
   SQL &&
-    Update(SQL, "teste2", Lista_Update, [
+    Delete(SQL, "teste2", [
       {
         campo: "descricao",
         valor: "%?%",
         operador: "like",
         type: VarChar(),
       },
+      {
+        campo: "id",
+        valor: 1,
+        operador: "<>",
+        type: Int(),
+      },
+      {
+        campo: "id",
+        valor: 4,
+        type: Int(),
+      },
     ]).then((result) => {
-      log("Resultado UPDATE >>", result);
+      log("Resultado DELETE >>", result);
     });
 });
 
