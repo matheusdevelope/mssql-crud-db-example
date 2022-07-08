@@ -42,8 +42,12 @@ export async function Select(
       query += ` WHERE ${Lista_Where.join(" AND ")}`;
     }
     query += ";";
-    log("SELECT query >>", query);
-    return await SQl.query(query);
+    // log("SELECT query >>", query);
+    // const transaction = SQl.transaction();
+    // transaction.begin();
+    // let result = await SQl.query(query);
+    // await transaction.commit();
+    return query;
   } catch (err) {
     return Promise.reject(err);
   }
@@ -53,8 +57,8 @@ export async function Insert(
   tabela: string,
   Lista_To_Insert: IValoresToInput[][]
 ) {
-  const transaction = SQl.transaction();
-  transaction.begin();
+  // const transaction = SQl.transaction();
+  // transaction.begin();
   try {
     for (let i = 0; i < Lista_To_Insert.length; i++) {
       const Valores_To_Insert = Lista_To_Insert[i];
@@ -72,9 +76,9 @@ export async function Insert(
       log("INSERT query: ", query);
       await request.query(query);
     }
-    await transaction.commit();
+    // await transaction.commit();
   } catch (err) {
-    await transaction.rollback();
+    // await transaction.rollback();
     return Promise.reject(err);
   }
 }
@@ -84,8 +88,8 @@ export async function Update(
   Lista_To_Update: Lista_To_Update[],
   where?: IWhere[]
 ) {
-  const transaction = SQl.transaction();
-  transaction.begin();
+  // const transaction = SQl.transaction();
+  // transaction.begin();
   try {
     for (let i = 0; i < Lista_To_Update.length; i++) {
       const Valores_To_Update = Lista_To_Update[i];
@@ -108,9 +112,9 @@ export async function Update(
       log("UPDATE query: ", query);
       await request.query(query);
     }
-    await transaction.commit();
+    // await transaction.commit();
   } catch (err) {
-    await transaction.rollback();
+    // await transaction.rollback();
     return Promise.reject(err);
   }
 }

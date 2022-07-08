@@ -1,25 +1,8 @@
-import mssql, { Int, VarChar } from "mssql";
-import { Delete, Insert, Select, Update } from "./crud";
+import { Int, VarChar } from "mssql";
+import { ConnectionSQL, Delete, Insert, Select, Update } from "./crud2";
 import { error, log } from "./utils";
 
-async function ConnectionSQL() {
-  try {
-    return await mssql.connect({
-      server: "localhost",
-      port: 1433,
-      database: "TESTE",
-      user: "sa",
-      password: "123abc..",
-      options: {
-        trustServerCertificate: true,
-      },
-    });
-  } catch (err) {
-    log(err);
-  }
-}
-
-const Lista_Update = [
+const Lista_To_Update = [
   {
     valores: [
       {
@@ -43,60 +26,58 @@ const Lista_Update = [
     // ],
   },
 ];
+const Lista_To_Insert = [
+  [
+    { campo: "descricao", type: VarChar(50), valor: "Nova Descrição!?" },
+    { campo: "id", type: Int(), valor: 3 },
+  ],
+];
+const Where_Geral_Update = [
+  {
+    campo: "descricao",
+    valor: "%?%",
+    operador: "like",
+    type: VarChar(),
+  },
+];
+const Where_Delete = [
+  {
+    campo: "descricao",
+    valor: "%?%",
+    operador: "like",
+    type: VarChar(),
+  },
+];
 
-ConnectionSQL().then((SQL) => {
-  SQL &&
-    Select(SQL, `teste2`)
-      .then((result) => {
-        log("Resultado SELECT  >>", result);
-      })
-      .catch(error);
+async function Start() {
+  const SQL = await ConnectionSQL();
+  if (SQL) {
+    try {
+      // await SQL.transaction().begin();
 
-  // SQL &&
-  //   Insert(SQL, "teste2", [
-  //     [
-  //       { campo: "descricao", type: VarChar(50), valor: "Nova Descrição!?" },
-  //       { campo: "id", type: Int(), valor: 3 },
-  //     ],
-  //   ])
-  //     .then((result) => {
-  //       log("Resultado UPDATE >>", result);
-  //     })
-  //     .catch(error);
+      const query_select = await Select(SQL, "Teste");
+      const resul_select = await SQL.query(query_select);
+      log("SELECT >>", query_select, resul_select);
+      // const resul_insert = await Insert(SQL, "Teste", Lista_To_Insert);
+      // log("INSERT >>", resul_insert);
+      // const resul_update = await Update(
+      //   SQL,
+      //   "Teste",
+      //   Lista_To_Update,
+      //   Where_Geral_Update
+      // );
+      // log("UPDATE >>", resul_update);
+      // const resul_delete = await Delete(SQL, "Teste", Where_Delete);
+      // log("DELETE >>", resul_delete);
 
-  // SQL &&
-  //   Update(SQL, "teste2", Lista_Update, [
-  //     {
-  //       campo: "descricao",
-  //       valor: "%?%",
-  //       operador: "like",
-  //       type: VarChar(),
-  //     },
-  //   ]).then((result) => {
-  //     log("Resultado UPDATE >>", result);
-  //   });
-  SQL &&
-    Delete(SQL, "teste2", [
-      {
-        campo: "descricao",
-        valor: "%?%",
-        operador: "like",
-        type: VarChar(),
-      },
-      {
-        campo: "id",
-        valor: 1,
-        operador: "<>",
-        type: Int(),
-      },
-      {
-        campo: "id",
-        valor: 4,
-        type: Int(),
-      },
-    ]).then((result) => {
-      log("Resultado DELETE >>", result);
-    });
-});
+      // await SQL.transaction().commit();
+    } catch (e) {
+      await SQL.transaction().rollback();
+      error(e);
+    }
+  }
+}
+
+Start();
 
 // docker exec -it <container_name> /opt/mssql-tools/bin/sqlcmd -S localhost -U sa

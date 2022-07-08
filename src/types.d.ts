@@ -39,3 +39,10 @@ export interface Lista_To_Update {
   valores: IValoresToInput[];
   where?: IWhere[];
 }
+
+export enum Actions {
+  Select,
+  Insert,
+  Update,
+  Delete,
+}
