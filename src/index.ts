@@ -1,6 +1,6 @@
-import { Int, VarChar } from "mssql";
+import { Int, Request, VarChar } from "mssql";
 import { ConnectionSQL, Delete, Insert, Select, Update } from "./crud2";
-import { error, log } from "./utils";
+import { error, log, RegisterValues } from "./utils";
 
 const Lista_To_Update = [
   {
@@ -48,17 +48,35 @@ const Where_Delete = [
     type: VarChar(),
   },
 ];
+const where_select = [
+  {
+    valor: 50,
+    type: Int(),
+    campo: "CodOrcamento",
+    operador: ">",
+  },
+];
 
 async function Start() {
   const SQL = await ConnectionSQL();
+  let request: Request;
   if (SQL) {
     try {
-      // await SQL.transaction().begin();
-
-      const query_select = await Select(SQL, "Teste");
-      const resul_select = await SQL.query(query_select);
-      log("SELECT >>", query_select, resul_select);
-      // const resul_insert = await Insert(SQL, "Teste", Lista_To_Insert);
+      // const query_select = Select("OrcamentoBalcao");
+      // query_select.setTop(2);
+      // query_select.setFields("CodOrcamento", "CodVendedor", "DataDigitacao");
+      // query_select.setWhere(where_select);
+      // request = RegisterValues(SQL.request(), where_select, true);
+      // const resul_select = await request.query(query_select.getQuery());
+      // log("SELECT >>", resul_select);
+      // const query_update = Update("OrcamentoBalcao");
+      // query_update.setTop(2);
+      // query_update.setFields("CodOrcamento", "CodVendedor", "DataDigitacao");
+      // query_update.setWhere(...Where_Geral_Update);
+      // request = RegisterValues(SQL.request(), Where_Geral_Update, true);
+      // const resul_update = await request.query(query_update.getQuery());
+      // log("UPDATE >>", resul_update);
+      //  const resul_insert = await Insert(SQL, "Teste", Lista_To_Insert);
       // log("INSERT >>", resul_insert);
       // const resul_update = await Update(
       //   SQL,
@@ -69,7 +87,6 @@ async function Start() {
       // log("UPDATE >>", resul_update);
       // const resul_delete = await Delete(SQL, "Teste", Where_Delete);
       // log("DELETE >>", resul_delete);
-
       // await SQL.transaction().commit();
     } catch (e) {
       await SQL.transaction().rollback();

@@ -65,10 +65,11 @@ export function Listas_Propriedade_Separadas_Where(valores: IWhere[]) {
         Dados_Agrupados["campo_input"].push("@" + value);
         Dados_Agrupados[key].push(value);
       } else {
-        const new_value = key === "operador" && !value ? "=" : value;
-        Dados_Agrupados[key].push(new_value);
+        // const new_value = key === "operador" ? value : "=";
+        Dados_Agrupados[key].push(value);
       }
     }
+    !obj.operador && Dados_Agrupados["operador"].push("=");
   });
   return Dados_Agrupados;
 }
@@ -78,7 +79,7 @@ function isnull_or_not(is_null?: Boolean) {
   }
   return "IS NULL";
 }
-export function MakeInputs(
+export function RegisterValues(
   request: Request,
   valores: IValoresToInput[],
   isWhere?: Boolean
@@ -109,6 +110,7 @@ export function Join_Campo_e_Valor_To_Update(Listas: IDadosAgrupadosUpdate) {
 export function Join_Campo_e_Valor_To_Where(Listas: IDadosAgrupadosWhere) {
   const result: string[] = [];
   Listas.campo.forEach((campo, index) => {
+    log(Listas.is_null[index]);
     if (Listas.is_null[index] === false || Listas.is_null[index] === true) {
       result.push(`${campo} ${isnull_or_not(Listas.is_null[index])}`);
     } else {
